@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Task\CreateTaskRequest;
+use App\Http\Requests\Task\UpdateTaskRequest;
 use App\Models\Task;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -14,29 +16,20 @@ class TaskController extends Controller
 
     public function index()
     {
-        $tasks = Task::latest()->paginate(10);
-        return view('tasks.index', compact('tasks'))->with('i', (request()->input('page', 1) - 1) * 10);
+        $tasks = Auth::user()->tasks()->paginate(5);
+        // echo ($tasks);
+        return view('tasks.index', compact('tasks'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('tasks.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CreateTaskRequest $request)
     {
-        /* Kiểm tra DL nhập vào form Thêm */
-        $request->validate([
-            'content'    => 'bail|required',
-        ]);
-
         $task = new Task;
+        $task->user_id = Auth::user()->id;
         $task->content  = $request->content;
         $task->status   = "In-progress";
         $task->save();
@@ -44,32 +37,18 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Task $task)
     {
         return view('tasks.show', compact('task'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Task $task)
     {
         return view('tasks.edit', compact('task'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Task $task)
+    public function update(UpdateTaskRequest $request, Task $task)
     {
-        $request->validate([
-            'content'    => 'bail|required',
-            'status'     => 'bail|required',
-        ]);
-
         $task = Task::find($request->hidden_id);
         $task->content  = $request->content;
         $task->status   = $request->status;
@@ -78,9 +57,6 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task has been updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Task $task)
     {
         $task->delete();

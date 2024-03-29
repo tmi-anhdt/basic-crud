@@ -23,7 +23,7 @@
         <table class="table table-bordered">
             <tr>
                 <th>ID</th>
-                <th>Task Content</th>
+                <th>Content</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -33,7 +33,13 @@
 
                     <tr>
                         <td>{{ $task->id }}</td>
-                        <td>{{ $task->content }}</td>
+                        <td>
+                            @if($task->status === "In-progress")
+                                {{ $task->content }}
+                            @else
+                                <span style="color: {{ $task->status === 'Completed' ? 'green' : 'red' }};"><s>{{ $task->content }}</s></span>
+                            @endif
+                        </td>
                         <td>{{ $task->status }}</td>
                         <td>
                             <form method="post" action="{{ route('tasks.destroy', $task->id) }}">
@@ -54,7 +60,10 @@
                 </tr>
             @endif
         </table>
-        {!! $tasks->links() !!}
+
+        <div class="w-100 d-flex justify-content-center">
+            {!! $tasks->links() !!}
+        </div>
     </div>
 </div>
 

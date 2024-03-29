@@ -17,10 +17,10 @@
             <div class="row mb-3">
                 <label class="col-sm-2 col-label-form">Status</label>
                 <div class="col-sm-10">
-                    <select id="status" name="status">
-                        <option value="Completed">Completed</option>
-                        <option value="In-progress">In-progress</option>
-                        <option value="Canceled">Canceled</option>
+                    <select id="status" name="status" value="{{ $task->status }}"">
+                        <option value="Completed" @selected($task->status === 'Completed')>Completed</option>
+                        <option value="In-progress" @selected($task->status === 'In-progress')>In-progress</option>
+                        <option value="Canceled" @selected($task->status === 'Canceled')>Canceled</option>
                       </select>
                 </div>
             </div>
