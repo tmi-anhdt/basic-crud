@@ -12,7 +12,8 @@ class CreateTaskRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if (!Auth::user()) return false;
+        if (!Auth::user())
+            return false;
         return true;
     }
 
@@ -24,7 +25,9 @@ class CreateTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => 'bail|required',
+            'content' => 'bail|required|unique:tasks,content,NULL,id,user_id,' . auth()->id(),
+            'status' => 'bail|required|in:In-progress,Completed,Canceled',
+            'user_id' => 'bail|required'
         ];
     }
 }
