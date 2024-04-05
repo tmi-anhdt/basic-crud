@@ -10,7 +10,8 @@
             <div class="row">
                 <div class="col col-md-6"><b>Tasks</b></div>
                 <div class="col col-md-6">
-                    <button type="button" class="btn btn-success btn-sm float-end" wire:click="create">Create</button>
+                    <button type="button" class="btn btn-success btn-sm float-end"
+                        wire:click="$dispatch('openModal', { component: 'modal.task-modal' })">Create</button>
                 </div>
             </div>
         </div>
@@ -22,43 +23,51 @@
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
-                @if (count($records) > 0)
-
-                    @foreach ($records as $record)
-                        <tr wire:key='{{ $record->id }}'>
-                            <td>{{ $record->id }}</td>
-                            <td>
-                                @if ($record->status === 'In-progress')
-                                    {{ $record->content }}
-                                @else
-                                    <span
-                                        style="color: {{ $record->status === 'Completed' ? 'green' : 'red' }};"><s>{{ $record->content }}</s></span>
-                                @endif
-                            </td>
-                            <td>{{ $record->status }}</td>
-                            <td>
-                                <div>
-                                    <button type="button" class="btn btn-warning btn-sm"
-                                        wire:click="edit({{ $record }})">Edit</button>
-                                    <button type="button" class="btn btn-sm btn-danger"
-                                        wire:click="delete({{ $record }})"
-                                        wire:confirm="Are you sure you want to delete this task?">Delete</button>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                @else
+                @forelse ($records as $record)
+                    <tr wire:key='{{ $record->id }}'>
+                        <td>{{ $record->id }}</td>
+                        <td>
+                            @if ($record->status === 'In-progress')
+                                {{ $record->content }}
+                            @else
+                                <span
+                                    style="color: {{ $record->status === 'Completed' ? 'green' : 'red' }};"><s>{{ $record->content }}</s></span>
+                            @endif
+                        </td>
+                        <td>{{ $record->status }}</td>
+                        <td>
+                            <div>
+                                <button type="button" class="btn btn-warning btn-sm"
+                                    wire:click="$dispatch('openModal', { component: 'modal.task-modal', arguments: { task: {{ $record }} }})">Edit</button>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                    wire:click="delete({{ $record }})"
+                                    wire:confirm="Are you sure you want to delete this task?">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
                     <tr>
                         <td colspan="5" class="text-center">No Task Found</td>
                     </tr>
-                @endif
+                @endforelse
             </table>
 
             {!! $records->links() !!}
         </div>
     </div>
 
-    @if ($openModal)
+    {{-- @if ($openModal)
         @include('livewire.modal.task-modal')
-    @endif
+    @endif --}}
+
+    {{-- <div x-data="{ open: false }">
+        <button @click="open = ! open" class="flex p-4 text-lg font-bold text-red-600">
+            Toggle Modal</button>
+
+        @teleport('body')
+            <div x-show="open">
+                Modal contents...
+            </div>
+        @endteleport
+    </div> --}}
 </div>

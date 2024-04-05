@@ -15,7 +15,7 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/sass/app.scss', 'resources/js/app.js'])
     @livewireStyles
 </head>
 
@@ -77,11 +77,11 @@
                 </div>
             </div>
         </nav>
-
         <main class="py-4">
             {{ $slot }}
         </main>
     </div>
+    @livewire('wire-elements-modal')
     @livewireScripts
 </body>
 
